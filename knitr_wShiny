@@ -1,0 +1,51 @@
+---
+title: "DEMODOC"
+author: "RDOJO"
+date: "Wednesday, July 09, 2014"
+output: html_document
+runtime: shiny
+---
+
+## This is how you create a title
+
+This is where you add text.
+
+```{r, echo = FALSE}
+library(data.table)
+squads = data.table(read.csv("C:/Users/Wojtek/Documents/squads2.csv"))
+
+
+library(xtable)
+inputPanel(
+   
+  selectInput("country", label = "Team",
+              choices = squads$Country, selected = "Sweden"),
+  
+  selectInput("year", label = "Year",
+              choices = squads$Year, selected = 1930)
+  
+)
+
+renderTable({
+   
+    squads[grepl(input$country,squads$Country)  & squads$Year == input$year,]
+    
+})
+```
+
+
+```{r, echo=FALSE}
+inputPanel(
+   
+  sliderInput("n", label = "Number of German goals:",
+              min = 1, max = 7, value = 1, step = 1),
+  
+  sliderInput("t", label = "Time left in game:",
+              min = 0, max = 90, value = 45, step = 5)
+  
+)
+
+renderPlot({
+   barplot(input$t/input$n/90, ylim = c(0, 1), ylab = 'Happiness', xlab = 'Brazil')
+})
+```
