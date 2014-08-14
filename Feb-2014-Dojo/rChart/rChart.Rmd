@@ -1,0 +1,39 @@
+Rmd with charts
+---------------
+
+```{r charting, echo = FALSE, warnings=FALSE, message=FALSE, results = 'asis'}
+library(rCharts)
+names(iris) = gsub("\\.", "", names(iris))
+bla <- rPlot(SepalLength ~ SepalWidth | Species, data = iris, color = 'Species', type = 'point')
+bla$show('iframesrc', cdn = TRUE)
+
+
+hair <- eye <- male <- subset(as.data.frame(HairEyeColor), Sex == "Male")
+n1 <- nPlot(Freq ~ Hair, group = "Eye", data = hair <- eye <- male, type = "multiBarChart")
+n1$show('iframesrc', cdn = TRUE)
+
+```
+
+
+```{r ikjsdlfk, echo = FALSE, warnings=FALSE, message=FALSE}
+
+country_stats <- data.frame(
+  country = paste("country ", 1:25), 
+  ice_cream_production = rnorm(25), 
+  flamenco_appreciation_rate = rnorm(25,mean = -1, sd = 4), 
+  beatles_records_sold = rnorm(25, mean = 2)
+)
+
+p2 <- rCharts$new()
+p2$field('lib', 'parcoords')
+p2$set(padding = list(top = 24, left = 0, bottom = 12, right = 200))
+
+p2$set(
+  data = toJSONArray(country_stats, json = F),
+  colorby = 'flamenco_appreciation_rate',
+  range = range(country_stats$flamenco_appreciation_rate),
+  colors = c('green', 'purple')
+)
+p2$show('iframesrc', cdn = TRUE)
+```
+
