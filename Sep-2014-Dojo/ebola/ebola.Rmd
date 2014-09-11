@@ -1,0 +1,40 @@
+Analysis of an ebola data-set
+=============================
+
+A brief examination of a dataset of ebola cases.
+
+```{r libraries, echo = FALSE, message = FALSE, warning = FALSE}
+library("ggplot2")
+source("ebola.R")
+```
+
+```{r loaddata, echo = FALSE, message = FALSE, warning = FALSE}
+ebola <-read.csv("Ebola - Countries.csv")
+ebola <- computeTotalCases(ebola)
+```
+
+Exploration
+-----------
+
+```{r plots, echo = FALSE, message = FALSE, warning = FALSE}
+exploratoryPlots(ebola)
+```
+
+Modelling
+---------
+
+```{r modelling, echo = FALSE, message = FALSE, warning = FALSE}
+mod <- linearModel(ebola)
+ebola <- addPredictedValues(ebola, mod)
+plotPredictedVsActual(ebola)
+```
+
+```{r extrapolate, echo = FALSE, message = FALSE, warning = FALSE}
+  intercept=mod$coefficients[1]
+  slope=mod$coefficients[2]
+```
+
+The predicted number of total suspected cases after 200 days are `r round(prd(200, intercept, slope))`.
+
+Given a population of 7.3 billion, all us will be suspected cases after `r round(days.until.end.of.humanity(7.3e9, intercept, slope))`.
+
