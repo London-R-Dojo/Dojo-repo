@@ -5,8 +5,6 @@ winrate<-100 * c(-0.05,-0.04,-0.03,-0.02,-0.01,0,0.01,0.02,0.03)
 pb<-c(0.0025,0.02,0.08,0.2,0.395,0.2,0.08,0.02,0.0025)
 
 table<-rbind(winrate,pb)
-windistribution<-fitdistr(table,densfun="normal")
-
 pbs = data.frame(t(table))
 
 # This is based on the sample size and was not clear how it was calculated as we only had a few pages of the book
