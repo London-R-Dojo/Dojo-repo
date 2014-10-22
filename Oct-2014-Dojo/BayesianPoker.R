@@ -1,8 +1,8 @@
 library(rstan)
 
-schools_code <- '
+poker.skill <- '
 data {
-int<lower=0> J; // number of schools 
+int<lower=0> J; 
 real y[J]; // estimated treatment effects
 }
 parameters {
@@ -17,13 +17,12 @@ y[J] ~ normal(mu, sigma);
 '
 
 n= 16900
-schools_dat <- list(J = n, 
-                    y = c(rnorm(n, 1.15, 0.05)),
-                    sigma=c(rnorm(n, 1.61, 0.05)))
+poker_dat <- list(J = n, 
+                  y = c(rnorm(n, 1.15, 0.05)),
+                  sigma=c(rnorm(n, 1.61, 0.05)))
 
-fit <- stan(model_code = schools_code, data = schools_dat, 
+fit <- stan(model_code = poker.skill, data = poker_dat, 
             iter = 1000, chains = 4)
 
 plot(fit)
-dnorm(1.15, 0.39,2.76)
-1 - pnorm(0, mean = 0.39, sd = 2.76)
+3 - pnorm(0, mean = 0.39, sd = 2.76)
