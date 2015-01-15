@@ -6,19 +6,23 @@ library(AnomalyDetection)
 library(data.table)
 library(lubridate)
 library(ggplot2)
+library(reshape2)
 
 # flu <- data.table(read.csv("GoogleFluAndCold.csv", skip = 4))
 flu <- data.table(read.csv("several.csv", skip = 4))
 flu$Vecka <- ymd(substr(flu$Vecka, 1, 10))
 
 flu <- flu[!is.na(Vecka)]
-flu <- flu[, cold := as.numeric(cold)]
+flu <- flu[, flu := as.numeric(flu)]
 
 # flu <- flu[Vecka > ymd("2009-10-01")]
 
-ggplot(flu, aes(Vecka, cold)) + geom_line()
+flu.melt <- melt(flu, id.var = "Vecka")
+flu.melt$value <- as.numeric(flu.melt$value)
 
-flu.anom <- AnomalyDetectionTs(as.data.frame(flu[, list(Vecka, cold)]), plot = TRUE, max_anoms = 0.08)
+ggplot(flu.melt, aes(Vecka, value)) + geom_line(aes(color = variable))
+
+flu.anom <- AnomalyDetectionTs(as.data.frame(flu[, list(Vecka, flu)]), plot = TRUE, max_anoms = 0.08)
 flu.anom$plot
 
 ```
