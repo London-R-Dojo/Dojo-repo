@@ -1,0 +1,64 @@
+Survival
+========
+From http://www.ats.ucla.edu/stat/r/examples/asa/asa_ch2_r.htm
+
+First part
+----------
+
+```{r}
+hmohiv<-read.table("http://www.ats.ucla.edu/stat/r/examples/asa/hmohiv.csv", sep=",", header = TRUE) 
+library(survival)
+library(data.table)
+hmohiv <- data.table(hmohiv)
+mini<-hmohiv[ID<=5,]
+
+sruv = Surv(mini$time, mini$censor)
+mini.surv <- survfit(sruv~ 1, conf.type="none")
+summary(mini.surv)
+
+plot(mini.surv, xlab="Time", ylab="Survival Probability")
+
+hmohiv.surv <- survfit( Surv(hmohiv$time, hmohiv$censor)~ 1, conf.type="none")
+summary(hmohiv.surv)
+plot(hmohiv.surv, xlab="Time", ylab="Survival Probability")
+```
+
+Second part
+-----------
+
+```{r}
+library(KMsurv)
+library(nlme)
+library(dplyr)
+t6m<-floor(hmohiv$time/6)
+tall<-data.table(t6m, hmohiv$censor)
+
+die<-gsummary(tall, sum, groups=t6m)
+die.2 <- tall[, data.table(V2 = sum(V2),
+                           total = nrow(.SD)), by = t6m]
+
+tall %>%
+  group_by(t6m) %>%
+  summarise(censor = sum(V2),
+            total = n()) -> die.3
+
+# total<-gsummary(tall, length, groups=t6m)
+
+
+ltab.data<-die.3
+
+
+lt=length(die.3$t6m)
+t6m[lt+1]=NA
+
+nevent=die.3$censor
+
+nlost=die.3$total - die.3$censor
+
+mytable<-lifetab(c(die.3$t6m, NA), 100, nlost, nevent)
+mytable[,1:5]
+
+plot(die.3$t6m[1:11], mytable[,5], type="s", xlab="Survival time in every 6 month", 
+     ylab="Proportion Surviving")
+
+```
