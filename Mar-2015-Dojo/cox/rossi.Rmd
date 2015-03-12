@@ -1,0 +1,55 @@
+Rossi
+====
+
+```{r blak, echo = FALSE, message = FALSE, warning = FALSE}
+
+
+library(survival)
+# library(data.table)
+library(lubridate)
+
+rr <- read.table("Rossi.txt", header = TRUE )
+mod.allison <- coxph(Surv(week, arrest) ~ fin + age + race + wexp + mar + paro + prio,data = rr)
+fit.2 <- coxph(Surv(week, arrest) ~ fin + age +  prio,data = rr)
+attach(rr)
+Rossi.fin <- data.frame(fin=c(0,1), age=rep(mean(age),2), race=rep(mean(race),2),
+                        wexp=rep(mean(wexp),2), mar=rep(mean(mar),2), paro=rep(mean(paro),2),
+                        prio=rep(mean(prio),2))
+detach(rr)
+plot(survfit(mod.allison, newdata=Rossi.fin), lty=c(1,2), ylim=c(.6, 1))
+legend(0, legend=c("fin = 0", "fin = 1"), lty=c(1,2))
+
+
+```
+
+
+Time dependent modeling
+-----------------------
+
+```{r ttt, echo = FALSE, message = FALSE, warning = FALSE}
+Rossi.2 <- matrix(0, 19809, 14)
+colnames(Rossi.2) <- c("id", "start", "stop", "arrest.time", names(rr)[1:10], "employed")
+
+row <- 0
+ for (i in 1:nrow(rr)) { # loop over individuals
+   for (j in 11:62) { # loop over 52 weeks
+     if (is.na(rr[i, j])) next # skip missing data
+     else {
+       row <- row + 1 # increment row counter
+       start <- j - 11 # start time (previous week)
+       stop <- start + 1 # stop time (current week)
+       arrest.time <- if (stop == rr[i, 1] && rr[i, 2] ==1) 1 else 0
+       # construct record:
+       Rossi.2[row,] <- c(i,start, stop, arrest.time, unlist(rr[i, c(1:10, j)]))
+       }
+     }
+ }
+ Rossi.2 <- as.data.frame(Rossi.2)
+ remove(i, j, row, start, stop, arrest.time)
+ 
+
+ mod.allison.2 <- coxph(Surv(start, stop, arrest.time) ~ fin + age + race + wexp + mar + paro + prio + employed, data=Rossi.2)
+```
+
+
+
