@@ -1,0 +1,60 @@
+---
+title: "GuardianR"
+author: "Xinye Li, Jean-Charles Campagne, yves Crutain"
+date: "8 April 2015"
+output: ioslides_presentation
+---
+
+```{r, include=FALSE}
+library(GuardianR)
+library(data.table)
+library(ggplot2)
+library(rmarkdown)
+library(wordcloud)
+library(googleVis)
+library(knitr)
+api.key <- "53h87hczz4wwfa5uhxskdnn3"
+path <- "C:/YCR pro/R/coding dojo 08042015 guardianr/push github/"
+
+load(file=paste0(path, "candidates.RData" ))
+load(file=paste0(path, "nc.RData" ))
+
+clean_tags <- function(htmlString) {
+  return(gsub("<.*?>", "", htmlString))
+}
+
+
+```
+
+## Get the data
+
+```{r, eval=FALSE}
+
+david.cameron <- get_guardian("%22david+cameron%22", format = "data.frame",
+             from.date="2015-01-01", 
+             to.date="2015-04-20", api.key)
+
+```
+
+
+## plot journalists popularity of main english political personalities
+
+```{r, echo=FALSE}
+
+candidates$month <- month(candidates$date.apparition)
+candidates.by.month <- aggregate(freq  ~ name + month, data= candidates, FUN="sum")
+
+plot.candidates <- ggplot(candidates.by.month, aes(x=month, y=freq, group=factor(name), colour=name)) +
+  geom_line(stat = "identity", size=1)
+plot.candidates
+
+```
+
+## word cloud around Nick Clegg
+
+```{r, echo=FALSE, cache=FALSE, results=FALSE, warning=FALSE, comment=FALSE, warning=FALSE, message=FALSE}
+wc_nc <- wordcloud(clean_tags(nc$body), min.freq = 400, max.freq = 2000)
+
+
+```
+
