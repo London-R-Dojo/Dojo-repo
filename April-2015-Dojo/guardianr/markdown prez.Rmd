@@ -13,7 +13,7 @@ library(rmarkdown)
 library(wordcloud)
 library(googleVis)
 library(knitr)
-api.key <- "53h87hczz4wwfa5uhxskdnn3"
+api.key <- "my.api.key"
 path <- "C:/YCR pro/R/coding dojo 08042015 guardianr/push github/"
 
 load(file=paste0(path, "candidates.RData" ))
