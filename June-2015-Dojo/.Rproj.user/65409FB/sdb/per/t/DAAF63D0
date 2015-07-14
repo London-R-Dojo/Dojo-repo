@@ -1,0 +1,17 @@
+{
+    "contents" : "\n\n#install.packages(c(\"R.matlab\", \"data.table\", \"ggplot2\"))\nlibrary(R.matlab)\nlibrary(data.table)\nlibrary(ggplot2)\n#install.packages(\"glmnet\")\nlibrary(glmnet)\n\npath <- \"C:/YCR pro/R/log - binomial/\"\n\ntt <- readMat(paste0(path, \"data.mat\"))\n\ndata <- data.frame(tt[1], stringsAsFactors = F)\ndata.dt <- data.table(data)\nhead(data)\n\n## Je considere la premiere colonne comme le score SOFA\n#  la seconde comme le deces, avec 1 = deces, 0 = non deces\n\n# association entre le score SOFA et le deces:\nres1 <- summary(data.dt[A.2 == 1, ])\nres0 <- summary(data.dt[A.2 == 0, ])\n\n# correlations?\ncor(data.dt[, A.1], data.dt[, A.2])\ncor(data.dt[, A.1], data.dt[, A.3])\ncor(data.dt[, A.1], data.dt[, A.4])\ncor(data.dt[, A.1], data.dt[, A.5])\ncor(data.dt[, A.1], data.dt[, A.6])\ncor(data.dt[, A.1], data.dt[, A.7])\ncor(data.dt[, A.1], data.dt[, A.8])\ncor(data.dt[, A.1], data.dt[, A.9])\n\n# reshape\ndata.dt[, A.2.2 := as.factor(A.2)]\ndata.dt[, A.3.2 := as.factor(A.3)]\n\n# modeles\nres.glm.mult <- glm(formula = A.2.2 ~ A.1 * A.3.2 , family = binomial(link = \"logit\"), data = data.dt)\nres.glm <- glm(formula = A.2.2 ~ A.1 + A.3.2 , family = binomial(link = \"logit\"), data = data.dt)\nic.glm <- confint(res.glm)\nic.glm.mult <- confint(res.glm.mult)\n\n## yeah, peu d'interactions entre le score sofa et le medicament.\n## l'IC ne couvre pas 0, dc validation de l'effet du medicament 3, malgre l'ajustement du score sofa\n\ntable(data.dt[, A.2], data.dt[, A.3])\n\n# \n# > res.glm.mult\n# \n# Call:  glm(formula = A.2.2 ~ A.1 * A.3.2, family = binomial(link = \"logit\"), \n#            data = data.dt)\n# \n# Coefficients:\n#   (Intercept)          A.1       A.3.21   A.1:A.3.21  \n# -2.383010     0.172748    -0.086546    -0.001049  \n# \n# Degrees of Freedom: 374280 Total (i.e. Null);  374277 Residual\n# Null Deviance:\t    399300 \n# Residual Deviance: 369400 \tAIC: 369400\n# > res.glm\n# \n# Call:  glm(formula = A.2.2 ~ A.1 + A.3.2, family = binomial(link = \"logit\"), \n#            data = data.dt)\n# \n# Coefficients:\n#   (Intercept)          A.1       A.3.21  \n# -2.37918      0.17222     -0.09435  \n# \n# Degrees of Freedom: 374280 Total (i.e. Null);  374278 Residual\n# Null Deviance:\t    399300 \n# Residual Deviance: 369400 \tAIC: 369400\n# > ic.glm\n# 2.5 %      97.5 %\n#   (Intercept) -2.3977889 -2.36061436\n# A.1          0.1701894  0.17425094\n# A.3.21      -0.1104189 -0.07829189\n# > ic.glm.mult <- confint(res.glm.mult)\n# Waiting for profiling to be done...\n# > ic.glm.mult\n# 2.5 %       97.5 %\n#   (Intercept) -2.406839680 -2.359262964\n# A.1          0.169866105  0.175635377\n# A.3.21      -0.120777240 -0.052318547\n# A.1:A.3.21  -0.005110993  0.003012297\n\n\n\n",
+    "created" : 1435013492713.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "575157836",
+    "id" : "DAAF63D0",
+    "lastKnownWriteTime" : 1435264965,
+    "path" : "C:/YCR pro/R/log - binomial/readmat.R",
+    "project_path" : null,
+    "properties" : {
+    },
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "type" : "r_source"
+}
