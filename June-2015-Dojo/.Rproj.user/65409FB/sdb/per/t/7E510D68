@@ -1,0 +1,17 @@
+{
+    "contents" : "\n# options(install.packages.check.source = \"no\")\n# install.packages(c(\"rscproxy\",\"rcom\"),repos=\"http://rcom.univie.ac.at/download\",lib=.Library,type=\"win.binary\")\n# library(rcom)\n# comRegisterRegistry()\n# install.packages(c(\"Rcmdr\",\"RcmdrPlugin.HH\"),lib=.Library,dep=TRUE)\n# install.packages(\"R2PPT\")\nlibrary(R2PPT)\n\n## to be use: r 3.1.0\npath <- \"C:/YCR pro/R/R2PPT/\"\n\nmyPres <- PPT.Init(method=\"RDCOMClient\")\nmyPres <- PPT.AddTitleOnlySlide(myPres,title=\"Test Automation PPT\",title.fontsize=40,title.font=\"Arial\")\n\n### For PowerPoint 2007 should be something like:\nmyPres <- PPT.ApplyTemplate(myPres,file=paste0(path, \"Template3.potx\"))\n\nlist.graph <- list.files(path = paste0(path, \"plot\"))\nlist.graph.png <- list.graph[substr(list.graph, nchar(list.graph)-2, nchar(list.graph)) == \"png\"]\n\nfor (i in list.graph.png){ # i <- \"Product_mix_monthly_comparison20150601.png\" \nmyPres <- PPT.AddTitleSlide(myPres,title=substr(i,1, nchar(i)-4)\n,subtitle=\"Subtitle here\")\nmyPres <- PPT.AddGraphicstoSlide(myPres, file = paste0(path, \"plot/\", i)\n\t, size = c(200, 105, 600, 380), dev.out.type = \"png\")\n}\n\nret <- PPT.SaveAs(myPres, paste0(path, \"try1\", format(Sys.time(), \"%Y%m%d %H:%M:%S.pptx\") ) )\n",
+    "created" : 1435228426369.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "4108730686",
+    "id" : "7E510D68",
+    "lastKnownWriteTime" : 1435249193,
+    "path" : "C:/YCR pro/R/R2PPT/code2.R",
+    "project_path" : null,
+    "properties" : {
+    },
+    "relative_order" : 8,
+    "source_on_save" : false,
+    "type" : "r_source"
+}

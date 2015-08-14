@@ -1,0 +1,64 @@
+---
+title: "Cox Survival"
+author: "Team"
+date: "17 June 2015"
+output: html_document
+---
+
+```{r ttt, echo = FALSE, message = FALSE, warning = FALSE}
+
+## Load survival package
+library(survival)
+## List datasets in survival package
+data(package = "survival")
+
+## Load lung data
+# data(lung)
+
+## Show first 6 rows
+head(lung)
+
+```
+
+
+```{r, echo=FALSE}
+
+# Add survival object. status == 2 is death
+lung$SurvObj <- with(lung, Surv(time, status == 2))
+
+str(lung$SurvObj)
+
+## Check data
+head(lung)
+
+```
+
+## Kaplan-Meier estimator. The "log-log" confidence interval is preferred.
+
+
+```{r }
+
+lung$age.detail <- cut(lung$age, breaks = c(-Inf, 56, 63, 69, Inf))
+
+km.as.one <- survfit(SurvObj ~ 1, data = lung, conf.type = "log-log")
+km.as.one.sex1 <- survfit(SurvObj ~ 1, data = lung[lung$sex == 1, ], conf.type = "log-log")
+km.by.sex <- survfit(SurvObj ~ sex, data = lung, conf.type = "log-log")
+km.by.age <- survfit(SurvObj ~ age.detail, data = lung, conf.type = "log-log")
+
+## Show object
+km.as.one
+
+summary(km.as.one, time = 30, censored = T)
+
+par(mfrow=c(1,2))
+plot(km.as.one, main = "survival rate")
+plot(km.by.sex, main = "survival rate by sex")
+
+par(mfrow=c(1,1))
+plot(km.by.age, main = "survival rate by age")
+
+tt <- summary(km.as.one)
+
+plot(tt$std.err~tt$time)
+
+```
