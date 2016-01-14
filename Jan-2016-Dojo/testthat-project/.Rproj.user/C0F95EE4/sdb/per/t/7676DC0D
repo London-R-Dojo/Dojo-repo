@@ -1,0 +1,17 @@
+{
+    "contents" : "\ncontext(\"test 2\")\ntest_that(\"our mysumNA function doesn't work\",\n{\n    expect_that(mysumNA(mtcars, \"cyl\"), equals(198))\n    \n    expect_that(mysumNA(mtcars, \"hello\"), equals(198))\n    \n    expect_that(mysumNA(readRDS(\"ss1.rds\"), \"cyl\"), equals(64))\n    expect_that(mysumNA(readRDS(\"ss0.rds\"), \"cyl\"), equals(134))\n    expect_that(mysumNA(readRDS(\"ssNA.rds\"), \"cyl\"), equals(NA_real_))\n    expect_that(mysumNA(readRDS(\"ssNA.rds\"), \"cyl\"), equals(NA_real_))\n    expect_is(mysumNA(readRDS(\"ssNA.rds\"), \"cyl\"), \"numeric\")\n})\n",
+    "created" : 1452714784693.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3641074117",
+    "id" : "7676DC0D",
+    "lastKnownWriteTime" : 1452729983,
+    "path" : "~/Documents/testthat-project/test2.R",
+    "project_path" : "test2.R",
+    "properties" : {
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "type" : "r_source"
+}
