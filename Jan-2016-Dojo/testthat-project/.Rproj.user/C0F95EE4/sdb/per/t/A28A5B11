@@ -1,0 +1,17 @@
+{
+    "contents" : "\ncontext(\"Test 1\")    # this will be printed out to know what is being tested\ntest_that(\"our mysum function doesn't work\",\n{\n    # test our sum function on the cyl column which exists and hello column which doesn't\n    expect_that(mysum(mtcars, \"cyl\"), equals(198))\n    expect_that(mysum(mtcars, \"hello\"), equals(-1))\n    # test our sum function on the cyl column which exists and hello column which doesn't on a data.table\n    expect_that(mysum(data.table(mtcars), \"cyl\"), equals(198))\n    expect_that(mysum(data.table(mtcars), \"hello\"), equals(-1))\n    # thisisastring isn't a data.table or data.frame so should raise and error in the function\n    expect_that(mysum(\"thisisastring\", \"hello\"), equals(-1))\n    # test the subsets of the mtcars data.frame which we saved earlier\n    expect_that(mysum(readRDS(\"ss1.rds\"), \"cyl\"), equals(64))\n    expect_that(mysum(readRDS(\"ss0.rds\"), \"cyl\"), equals(134))\n    # test the subsets of the mtcars data.frame which has an NA appended to the end\n    expect_that(mysum(readRDS(\"ssNA.rds\"), \"cyl\"), equals(NA_real_))\n    expect_is(mysum(readRDS(\"ssNA.rds\"), \"cyl\"), \"numeric\")\n})\n",
+    "created" : 1452715035641.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3963163269",
+    "id" : "A28A5B11",
+    "lastKnownWriteTime" : 1452729987,
+    "path" : "~/Documents/testthat-project/test1.R",
+    "project_path" : "test1.R",
+    "properties" : {
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "type" : "r_source"
+}

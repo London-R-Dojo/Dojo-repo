@@ -1,0 +1,17 @@
+{
+    "contents" : "library(testthat); library(data.table)\nsource(\"tt_functions.R\")\n\ntest_dir(\".\")\n",
+    "created" : 1452730074806.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3379357893",
+    "id" : "5A3768D1",
+    "lastKnownWriteTime" : 1452730194,
+    "path" : "~/Documents/testthat-project/run_all_tests.R",
+    "project_path" : "run_all_tests.R",
+    "properties" : {
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "type" : "r_source"
+}

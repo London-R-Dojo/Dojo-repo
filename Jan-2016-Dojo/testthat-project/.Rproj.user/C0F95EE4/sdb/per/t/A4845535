@@ -1,0 +1,17 @@
+{
+    "contents" : "\nmysum <- function(dat, col.name) {\n    \n    result = tryCatch({\n        if (\"data.table\" %in% class(dat)) {\n            sum(dat[ , col.name, with = FALSE])\n        } else {\n            sum(dat[ ,col.name])\n        }\n    }, warning = function(w) {\n        print(\"there was a warning!!!\")\n        0\n    }, error = function(e) {\n        print(paste(e, \"there was an error trapped in our mysum function!!!\"))\n        -1    \n    })\n    result\n}\n\nmysumNA <- function(dat, col.name) {\n    #testthat::expect_that(class(dat), equals(\"data.frame\"))\n    sum(dat[ ,col.name],na.rm=T)\n}\n\n",
+    "created" : 1452713419784.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2814411410",
+    "id" : "A4845535",
+    "lastKnownWriteTime" : 1452730016,
+    "path" : "~/Documents/testthat-project/tt_functions.R",
+    "project_path" : "tt_functions.R",
+    "properties" : {
+    },
+    "relative_order" : 2,
+    "source_on_save" : true,
+    "type" : "r_source"
+}
