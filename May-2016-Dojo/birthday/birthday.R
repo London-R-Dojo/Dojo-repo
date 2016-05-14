@@ -96,5 +96,3 @@ cppFunction('
               return(Rcpp::mean(peopleNeededInIteration));
             } ')
 
-
-
