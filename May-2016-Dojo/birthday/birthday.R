@@ -1,4 +1,5 @@
 library(Rcpp)
+sourceCpp("birthdaySimulation.cpp")
 
 main <- function() {
   n <- 100000
@@ -7,6 +8,12 @@ main <- function() {
   system.time(p1 <- rDojoSolution(n, num.with.same.bday))
   system.time(p2 <- rDojo.plusYearDayVector(n, num.with.same.bday))
   system.time(p3 <- rDojo.plusYearDayVector.cpp(n, num.with.same.bday))
+  system.time(p4 <- birthdaySimulation(n, 365, num.with.same.bday))
+
+  p1
+  p2
+  p3
+  mean(p4)
 }
 
 rDojoSolution <- function(n, num.with.same.bday) {
