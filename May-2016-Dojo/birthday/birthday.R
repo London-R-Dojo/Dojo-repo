@@ -84,9 +84,7 @@ cppFunction('
                 int sampleStartInd = i*maxNumDays;
                 IntegerVector birthdaysOnDay = IntegerVector(daysInYear, 0);
                 for(int j = 0; j < maxNumDays; j++) {
-                  int bday = samples[sampleStartInd + j];
-                  birthdaysOnDay[bday] = birthdaysOnDay[bday] + 1;
-                  if(birthdaysOnDay[bday] == numSameBDay) {
+                  if((++birthdaysOnDay[samples[sampleStartInd + j]]) == numSameBDay) {
                     peopleNeededInIteration[i] = j+1;
                     break;
                   }
