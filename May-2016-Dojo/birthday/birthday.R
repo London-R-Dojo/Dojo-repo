@@ -8,7 +8,8 @@ main <- function() {
   system.time(p1 <- rDojoSolution(n, num.with.same.bday))
   system.time(p2 <- rDojo.plusYearDayVector(n, num.with.same.bday))
   system.time(p3 <- rDojo.plusYearDayVector.cpp(n, num.with.same.bday))
-  system.time(p4 <- birthdaySimulation(n, 365, num.with.same.bday))
+  system.time(p4 <- rDojo.plusYearDayVector.cpp.improved(n, num.with.same.bday))
+  system.time(p5 <- birthdaySimulation(n, 365, num.with.same.bday))
 
   p1
   p2
@@ -73,11 +74,43 @@ rDojo.plusYearDayVector.cpp <- function(n, num.with.same.bday) {
   max.number.days <- (num.with.same.bday - 1)*days.in.year  + 1
   all.samples = sample(1:days.in.year, max.number.days*n, replace = TRUE)
 
-  simulatePeopleNeeded(all.samples, n, max.number.days, num.with.same.bday, days.in.year)
+  simulatePeopleNeeded1(all.samples, n, max.number.days, num.with.same.bday, days.in.year)
+}
+
+rDojo.plusYearDayVector.cpp.improved <- function(n, num.with.same.bday) {
+  people <- vector(mode = 'integer', length = n)
+  # Sample n sets of days of the year
+  # Set 731 as it is 2*365 + 1, thus guaranteeing that at least three people will share a birthday
+  days.in.year <- 365
+  max.number.days <- (num.with.same.bday - 1)*days.in.year  + 1
+  all.samples = sample(1:days.in.year, max.number.days*n, replace = TRUE)
+
+  simulatePeopleNeeded2(all.samples, n, max.number.days, num.with.same.bday, days.in.year)
 }
 
 cppFunction('
-            double simulatePeopleNeeded(IntegerVector samples, int iterations, int maxNumDays, int numSameBDay, int daysInYear) {
+            double simulatePeopleNeeded1(IntegerVector samples, int iterations, int maxNumDays, int numSameBDay, int daysInYear) {
+              IntegerVector peopleNeededInIteration = IntegerVector(iterations, 0);
+
+              for(int i = 0; i < iterations; i++) {
+                int sampleStartInd = i*maxNumDays;
+                IntegerVector birthdaysOnDay = IntegerVector(daysInYear, 0);
+                for(int j = 0; j < maxNumDays; j++) {
+                  int bday = samples[sampleStartInd + j];
+                  birthdaysOnDay[bday] = birthdaysOnDay[bday] + 1;
+                  if(birthdaysOnDay[bday] == numSameBDay) {
+                    peopleNeededInIteration[i] = j+1;
+                    break;
+                  }
+                }
+              }
+
+              return(Rcpp::mean(peopleNeededInIteration));
+            } ')
+
+
+cppFunction('
+            double simulatePeopleNeeded2(IntegerVector samples, int iterations, int maxNumDays, int numSameBDay, int daysInYear) {
               IntegerVector peopleNeededInIteration = IntegerVector(iterations, 0);
 
               for(int i = 0; i < iterations; i++) {
