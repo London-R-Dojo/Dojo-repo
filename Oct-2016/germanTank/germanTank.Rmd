@@ -1,0 +1,72 @@
+German tanks
+------------
+
+```{r lib, echo = FALSE, message = FALSE, warning = FALSE}
+library(data.table)
+library(ggplot2)
+library(dplyr)
+library(dtplyr)
+library(tidyr)
+
+N <- 1000
+german.tanks <- seq(1, N)
+
+captured.tanks <- function(num.tanks) {
+  sample(german.tanks, num.tanks)
+}
+
+tanksFreq <- function(captured.tanks) {
+  k <- length(captured.tanks)
+  m <- max(captured.tanks)
+  m + m/k -1
+}
+
+simulation <- 1000
+
+number.tanks <- c(seq(5, 40, by = 5))
+tanks =  1000
+
+# lll.sim <- data.table(data.frame(sapply(number.tanks, function(x) {
+#                                           replicate(simulation, tanksFreq(captured.tanks(x)))
+# })))
+
+lll.sim <- data.table()
+
+for(nn in number.tanks) {
+  lll.sim <- rbind(lll.sim, data.table( number.of.tanks = nn, 
+                                       estimate = replicate(simulation, tanksFreq(captured.tanks(nn)))))
+}
+
+stats.by.num <- lll.sim[, list(mean = mean(estimate), sd = sd(estimate)), by = number.of.tanks]
+lll.sim[, number.of.tanks := as.character(number.of.tanks)]
+ggplot(lll.sim, aes(estimate)) + geom_density(aes(color = number.of.tanks))
+
+
+library(rstan)
+
+stan.code = "
+data {
+    int<lower=1> M;  // number of serial numbers observed
+    real y[M];       // serial numbers
+}
+parameters {
+    real<lower=max(y)> N;
+}
+model {
+    N ~ uniform(max(y), 10000);  // P(N)
+    y ~ uniform(0, N);           // P(D|N)
+}
+"
+                
+
+fit <- stan(model_code =stan.code, data = list(M = 40, y = captured.tanks(40)), iter = 5000, chains = 4)
+N <- extract(fit, "N")
+
+comp <- lll.sim[ number.of.tanks == 40, type := "freq"]
+
+comp <- rbind(comp, data.table( number.of.tanks = 40, estimate = unlist(N), type = "bayesian"))
+
+ggplot(comp[number.of.tanks == 40], aes(estimate)) + geom_density(aes(color = type))
+
+
+```
