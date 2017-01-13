@@ -70,11 +70,14 @@ main <- function() {
   year.data[, sunrise.diff := 60*c(NA, diff(sun.rise))]
 
   year.diff.m <- melt(year.data[, list(sunset.diff, sunrise.diff, day)], id.vars = "day", variable.name = "Type", value.name = "Time")
-  ggplot(year.diff.m, aes(day, Time)) + geom_line(aes(color = Type))
+
+  mid.summer <- ymd("2016-06-21")
+  mid.winter <- ymd("2016-12-21")
+  ggplot(year.diff.m, aes(day, Time)) + geom_line(aes(color = Type)) + geom_vline(xintercept = as.numeric(c(mid.summer, mid.winter)))
 
   year.dd <- melt(year.data, id.vars = "day", variable.name = "Type", value.name = "Time")
 
-  ggplot(year.dd, aes(day, Time)) + geom_line(aes(color = Type))
+  ggplot(year.dd, aes(day, Time)) + geom_line(aes(color = Type))+ geom_vline(xintercept = as.numeric(c(mid.summer, mid.winter)))
 
   #   library(maptools)
 }
