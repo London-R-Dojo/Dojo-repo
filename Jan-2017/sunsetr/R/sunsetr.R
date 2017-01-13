@@ -52,34 +52,29 @@ toRadians <- function(deg) deg*pi/180
 
 toDegrees <- function(rad) rad*180/pi
 
-longitude <- -0.126236
-latitude <- 51.500152
-dd <- today()
-zenith <- 96
-zenith <- 108
+main <- function() {
+  longitude <- -0.126236
+  latitude <- 51.500152
+  dd <- today()
+  #   zenith <- 96
+  #   zenith <- 108
+  zenith <- 90.83
 
-zenith <- 90.83
-ss <- sunSetFor(dd, longitude, latitude, zenith, localOffset = 0)
-ss
+  library(data.table)
+  library(ggplot2)
+  year.data <- data.table(day = seq(ymd("2016-01-01"), ymd("2016-12-31"), by = "day"))
+  year.data[, sun.rise := sunRiseFor(day, longitude, latitude, zenith)]
+  year.data[, sun.set := sunSetFor(day, longitude, latitude, zenith)]
 
-sr <- sunRiseFor(dd, longitude, latitude, zenith, localOffset = 0)
-sr
+  year.data[, sunset.diff := 60*c(NA, diff(sun.set))]
+  year.data[, sunrise.diff := 60*c(NA, diff(sun.rise))]
 
+  year.diff.m <- melt(year.data[, list(sunset.diff, sunrise.diff, day)], id.vars = "day", variable.name = "Type", value.name = "Time")
+  ggplot(year.diff.m, aes(day, Time)) + geom_line(aes(color = Type))
 
-library(data.table)
-library(ggplot2)
-year.data <- data.table(day = seq(ymd("2016-01-01"), ymd("2016-12-31"), by = "day"))
-year.data[, sun.rise := sunRiseFor(day, longitude, latitude, zenith)]
-year.data[, sun.set := sunSetFor(day, longitude, latitude, zenith)]
+  year.dd <- melt(year.data, id.vars = "day", variable.name = "Type", value.name = "Time")
 
-year.data[, sunset.diff := 60*c(NA, diff(sun.set))]
-year.data[, sunrise.diff := 60*c(NA, diff(sun.rise))]
+  ggplot(year.dd, aes(day, Time)) + geom_line(aes(color = Type))
 
-year.diff.m <- melt(year.data[, list(sunset.diff, sunrise.diff, day)], id.vars = "day", variable.name = "Type", value.name = "Time")
-ggplot(year.diff.m, aes(day, Time)) + geom_line(aes(color = Type))
-
-year.dd <- melt(year.data, id.vars = "day", variable.name = "Type", value.name = "Time")
-
-ggplot(year.dd, aes(day, Time)) + geom_line(aes(color = Type))
-
-library(maptools)
+  #   library(maptools)
+}
